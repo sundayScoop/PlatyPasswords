@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <script type="module" src="https://tide-foundation.github.io/heimdall/tide.js"></script>
+    <script>
+        if(window.localStorage.getItem("CVK") !== null){
+            window.location.replace(window.location.href + "main.html");
+        }
+
+        function heimdall(obj){ // i get called from inside tide.js
+            // do stuff with cvk
+            localStorage.setItem("CVK", obj.CVK);
+            localStorage.setItem("UID", obj.UID);
+
+            window.location.replace(window.location.href + "main.html"); // i have no idea what the url will be
+        }
+    </script>
+    <head>
+        <title>PlatyPus Passwords</title>
+    </head>
+    <body>
+        <div class="content">      
+            <header style="font-family: 'Courier New', monospace; text-align: center;">
+                <h1 style="font-size: 80px;">PlatyPus Passwords</h1>
+                <p>Secured with the Tide Network</p>
+            </header>
+        </div>
+    </body>
+</html>
