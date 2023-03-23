@@ -22,4 +22,4 @@ Navigating to [localhost](http://localhost:8000) will show you the login page to
 If you want to explore what the encrypted data looks like, install a DB explorer such as [Db Browswer](https://sqlitebrowser.org/) and open the LocalDatabase.db in the project.
 
 ## I want to learn more about how Platy Works
-There is this video []() where I explain how Platy works, and how it uses the Tide Enclave to secure user data.
+There is this [video](https://clipchamp.com/watch/hB5vCvUMx8e) where I explain how Platy works, and how it uses the Tide Enclave to secure user data.
