@@ -17,9 +17,9 @@ git clone https://github.com/sundayScoop/PlatyPasswords.git
 dotnet run --urls=http://localhost:8000
 ```
 
-Navigating to [http://localhost:8000]() will show you the login page to Platy. 
+Navigating to [localhost](http://localhost:8000)will show you the login page to Platy. 
 
-If you want to explore what the encrypted data looks like, install a DB explorer such as [https://sqlitebrowser.org/]() and open the LocalDatabase.db in the project.
+If you want to explore what the encrypted data looks like, install a DB explorer such as [Db Browswer](https://sqlitebrowser.org/) and open the LocalDatabase.db in the project.
 
 ## I want to learn more about how Platy Works
 There is this video []() where I explain how Platy works, and how it uses the Tide Enclave to secure user data.
