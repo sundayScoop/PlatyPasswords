@@ -10,7 +10,7 @@ Platy's servers NEVER have access to:
 That means that if an adversery fully took control of Platy's servers, absolutely zero user data would be compromised.
 
 ## I want to run Platy Locally
-Great! Make sure you have the .NET SDK installed, then simply:
+Great! Make sure you have the [.NET SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) installed, then simply:
 
 ```
 git clone https://github.com/sundayScoop/PlatyPasswords.git
