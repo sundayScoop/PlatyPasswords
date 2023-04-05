@@ -23,3 +23,4 @@ If you want to explore what the encrypted data looks like, install a DB explorer
 
 ## I want to learn more about how Platy Works
 There is this [video](https://clipchamp.com/watch/hB5vCvUMx8e) where I explain how Platy works, and how it uses the Tide Enclave to secure user data.
+### UPDATE: PlatyPus Passwords now has a simple UI instead of the Tide Enclave. This is due to the Heimdall SDK changning from a front and backend JS module, to just a backend JS SDK.
