@@ -1,6 +1,4 @@
-import {encryptData, decryptData} from "https://cdn.jsdelivr.net/gh/tide-foundation/Tide-h4x2-2@main/H4x2-Node/H4x2-Node/wwwroot/modules/H4x2-TideJS/Tools/AES.js";
-import {BigIntToByteArray} from "https://cdn.jsdelivr.net/gh/tide-foundation/Tide-h4x2-2@main/H4x2-Node/H4x2-Node/wwwroot/modules/H4x2-TideJS/Tools/Utils.js";
-
+import { signIn, signUp, AES, Utils, EdDSA, Hash } from 'https://cdn.jsdelivr.net/gh/tide-foundation/heimdall@main/heimdall.js';
 const btn_a = document.querySelector('.addbtn');
 btn_a.addEventListener('click', add);
 
@@ -21,7 +19,7 @@ async function refresh(){
         return;
     }
 
-    cvk = BigIntToByteArray(BigInt(cvk));
+    cvk = Utils.BigIntToByteArray(BigInt(cvk));
 
     const resp = await fetch(window.location.origin + `/user/getdata?uid=${uid}`);
     const text = await resp.text();
@@ -33,7 +31,7 @@ async function refresh(){
 
         // Loop through the data and create a new row for each item
         for (var i = 0; i < encryptedData.length; i++) {
-            const decryptedData = await decryptData(encryptedData[i], cvk);
+            const decryptedData = await AES.decryptData(encryptedData[i], cvk);
             const decryptedObj = JSON.parse(decryptedData); // {password, website}
 
             // Create a new row and cells
@@ -66,7 +64,7 @@ async function add(){
         window.location.replace(window.location.origin + "/index.html");
     }
 
-    cvk = BigIntToByteArray(BigInt(cvk));
+    cvk = Utils.BigIntToByteArray(BigInt(cvk));
 
     var pass = document.getElementById("new-pass").value;
     var website = document.getElementById("website").value;
@@ -74,7 +72,7 @@ async function add(){
         password: pass,
         website: website
     });
-    const encryptedDataEntry = await encryptData(plainDataEntry, cvk);
+    const encryptedDataEntry = await AES.encryptData(plainDataEntry, cvk);
 
     const form = new FormData();
     form.append("data", encryptedDataEntry);
