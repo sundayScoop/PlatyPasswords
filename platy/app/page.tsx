@@ -9,7 +9,7 @@ export default function Home() {
           fontFamily: "'Courier New', monospace",
         }}
       >
-        <h1 style={{ fontSize: "80px" }}>PlatyPus Passwords</h1>
+        <h1 style={{ fontSize: "80px" }}>Platypus Passwords</h1>
         <p>Secured with the Tide Network</p>
       </header>
       <button
