@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 
 type Password = {
 	id: number;
@@ -9,16 +10,18 @@ type Password = {
 };
 
 export default function PasswordDashboard() {
+	const searchParams = useSearchParams();
+	const user = searchParams.get("user") || "default";
 	const [passwords, setPasswords] = useState<Password[]>([]);
 	const [showIds, setShowIds] = useState<number[]>([]);
 	const [newName, setNewName] = useState("");
 	const [newValue, setNewValue] = useState("");
 
 	useEffect(() => {
-		fetch("/api/passwords")
+		fetch(`/api/passwords?user=${encodeURIComponent(user)}`)
 			.then((res) => res.json())
 			.then(setPasswords);
-	}, []);
+	}, [user]);
 
 	const toggleShow = (id: number) => {
 		setShowIds((ids) =>
@@ -28,7 +31,7 @@ export default function PasswordDashboard() {
 
 	const addPassword = async () => {
 		if (newName && newValue) {
-			const res = await fetch("/api/passwords", {
+			const res = await fetch(`/api/passwords?user=${encodeURIComponent(user)}`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ name: newName, value: newValue }),
@@ -43,7 +46,7 @@ export default function PasswordDashboard() {
 	};
 
 	const removePassword = async (id: number) => {
-		const res = await fetch(`/api/passwords/${id}`, { method: "DELETE" });
+		const res = await fetch(`/api/passwords/${id}?user=${encodeURIComponent(user)}`, { method: "DELETE" });
 		if (res.status === 204) {
 			setPasswords((pwds) => pwds.filter((p) => p.id !== id));
 			setShowIds((ids) => ids.filter((i) => i !== id));

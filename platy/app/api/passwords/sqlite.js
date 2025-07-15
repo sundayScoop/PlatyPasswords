@@ -24,7 +24,8 @@ export async function getDb() {
       CREATE TABLE IF NOT EXISTS passwords (
         id    INTEGER PRIMARY KEY AUTOINCREMENT,
         name  TEXT NOT NULL,
-        value TEXT NOT NULL
+        value TEXT NOT NULL,
+        user  TEXT NOT NULL
       )
     `);
   }
