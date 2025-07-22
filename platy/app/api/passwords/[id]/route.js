@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '../sqlite';
+import { verifyRequest } from '../route';
 
 export async function DELETE(req, context) {
   const db = await getDb();
-  const { id } = context.params;
-  const { searchParams } = new URL(req.url);
-  const user = searchParams.get('user');
-  if (!user) {
-    return NextResponse.json({ error: 'Missing user' }, { status: 400 });
+  const { id } = await context.params;
+  const user = await verifyRequest(req);
+  if (user instanceof NextResponse) {
+    return user; // If the user is not authenticated, return the response directly
   }
   // Only delete if the password belongs to the user
   const result = await db.run('DELETE FROM passwords WHERE id = ? AND user = ?', [id, user]);

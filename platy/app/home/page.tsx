@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import { useTideCloak } from '@tidecloak/nextjs'
 
 type Password = {
 	id: number;
@@ -10,31 +11,55 @@ type Password = {
 };
 
 export default function PasswordDashboard() {
-	const searchParams = useSearchParams();
-	const user = searchParams.get("user") || "default";
+	const { logout, getValueFromIdToken, hasRealmRole, token, doEncrypt, doDecrypt} = useTideCloak();
+
+
 	const [passwords, setPasswords] = useState<Password[]>([]);
 	const [showIds, setShowIds] = useState<number[]>([]);
 	const [newName, setNewName] = useState("");
 	const [newValue, setNewValue] = useState("");
+	const [showPasswords, setShowPasswords] = useState<{ [id: number]: string | null }>({});
 
 	useEffect(() => {
-		fetch(`/api/passwords?user=${encodeURIComponent(user)}`)
+		if(token){
+			fetch(`/api/passwords`, {
+				headers: {
+				Authorization: `Bearer ${token}`,
+				},
+			})
 			.then((res) => res.json())
 			.then(setPasswords);
-	}, [user]);
+		}
+	}, [token]);
 
-	const toggleShow = (id: number) => {
-		setShowIds((ids) =>
-			ids.includes(id) ? ids.filter((i) => i !== id) : [...ids, id]
-		);
+	const toggleShow = async (id: number, encValue: string) => {
+		if (showPasswords[id]) {
+			// Hide password
+			setShowPasswords((prev) => {
+				const copy = { ...prev };
+				delete copy[id];
+				return copy;
+			});
+		} else {
+			// Decrypt and show password
+			const decrypted = await decryptPassword(encValue);
+			setShowPasswords((prev) => ({ ...prev, [id]: decrypted }));
+		}
 	};
 
 	const addPassword = async () => {
 		if (newName && newValue) {
-			const res = await fetch(`/api/passwords?user=${encodeURIComponent(user)}`, {
+			const encryptedPassword = (await doEncrypt([{
+				data: newValue,
+				tags: ["dob"]
+			}]))[0];
+			const res = await fetch(`/api/passwords`, {
 				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ name: newName, value: newValue }),
+				headers: { 
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`,
+				 },
+				body: JSON.stringify({ name: newName, value: encryptedPassword }),
 			});
 			if (res.ok) {
 				const newPw = await res.json();
@@ -46,12 +71,27 @@ export default function PasswordDashboard() {
 	};
 
 	const removePassword = async (id: number) => {
-		const res = await fetch(`/api/passwords/${id}?user=${encodeURIComponent(user)}`, { method: "DELETE" });
+		const res = await fetch(`/api/passwords/${id}`, { 
+			method: "DELETE",
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
 		if (res.status === 204) {
 			setPasswords((pwds) => pwds.filter((p) => p.id !== id));
 			setShowIds((ids) => ids.filter((i) => i !== id));
 		}
 	};
+
+	const decryptPassword = async (enc: string) => {
+		const pass = await doDecrypt([
+			{
+				encrypted: enc,
+				tags: ["dob"]
+			}
+		]);
+		return pass[0];
+	}
 
 	return (
 		<div
@@ -86,18 +126,18 @@ export default function PasswordDashboard() {
 	className="text-xl bg-gray-800 px-4 py-2 rounded-lg select-none w-full block overflow-hidden whitespace-nowrap text-ellipsis text-left min-w-0"
 	style={{ fontFamily: "'Courier New', monospace" }}
 >
-	{showIds.includes(p.id)
-		? p.value
+	{showPasswords[p.id] !== undefined
+		? showPasswords[p.id] || ''
 		: '•'.repeat(20)}
 </span>
 										<button
 											className="focus:outline-none"
 											aria-label={
-												showIds.includes(p.id)
+												showPasswords[p.id] !== undefined
 													? "Hide password"
 													: "Show password"
 											}
-											onClick={() => toggleShow(p.id)}
+											onClick={() => toggleShow(p.id, p.value)}
 										>
 											{/* Eye icon SVG */}
 											<svg
