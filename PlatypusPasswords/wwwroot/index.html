@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <script type="module">
+        import { signIn, signUp, AES, Utils, EdDSA, Hash } from 'https://cdn.jsdelivr.net/gh/tide-foundation/heimdall@main/heimdall.js';
+
+        document.getElementById('loginBtn').addEventListener('click', async function() {
+            var user = document.getElementById('username_si').value;
+            var pass = document.getElementById('password_si').value;
+            var obj = await signIn.start_Heimdall(user, pass);
+
+            localStorage.setItem("CVK", obj.CVK);
+            localStorage.setItem("UID", obj.UID);
+
+            window.location.replace(window.location.href + "main.html");
+        });
+        
+        document.getElementById('signupBtn').addEventListener('click', async function() {
+            var user = document.getElementById('username_su').value;
+            var pass = document.getElementById('password_su').value;
+            var obj = await signUp.start_Heimdall(user, pass);
+
+            localStorage.setItem("CVK", obj.CVK);
+            localStorage.setItem("UID", obj.UID);
+
+            window.location.replace(window.location.href + "main.html");
+        });
+
+    </script>
+    <script>
+        if(window.localStorage.getItem("CVK") !== null){
+            window.location.replace(window.location.href + "main.html");
+        }
+
+        function switchDiv(){
+			if(document.getElementById("login_form").style.display === "none"){
+				document.getElementById("login_form").style.display = "block"
+				document.getElementById("signup_form").style.display = "none";
+			}else if(document.getElementById("signup_form").style.display === "none"){
+				document.getElementById("signup_form").style.display = "block";
+				document.getElementById("login_form").style.display = "none";
+			}
+		}
+    </script>
+    <head>
+        <title>PlatyPus Passwords</title>
+    </head>
+    <body>
+        <div class="content">      
+            <header style="font-family: 'Courier New', monospace; text-align: center;">
+                <h1 style="font-size: 80px;">PlatyPus Passwords</h1>
+                <p>Secured with the Tide Network</p>
+            </header>
+        </div>
+
+        <div id="login_form">
+            <label for="username">Username:</label>
+            <input type="text" id="username_si" name="username">
+            <br>
+            <label for="password">Password:</label>
+            <input type="password" id="password_si" name="password">
+            <br>
+            <button id="loginBtn">Login</button>
+            <u onclick="switchDiv()">No Account? Sign Up!</u>
+        </div>
+        <div style="display: none;" id="signup_form">
+            <label for="username">Username:</label>
+            <input type="text" id="username_su" name="username">
+            <br>
+            <label for="password">Password:</label>
+            <input type="password" id="password_su" name="password">
+            <br>
+            <button id="signupBtn">Sign Up!</button>
+            <u onclick="switchDiv()">Already have an account?</u>
+        </div>
+    </body>
+</html>
